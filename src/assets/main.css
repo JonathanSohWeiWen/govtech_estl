@@ -605,6 +605,8 @@ video {
   }
 }
 
+
+
 .space-y-0 > :not(template) ~ :not(template) {
   --space-y-reverse: 0;
   margin-top: calc(0px * calc(1 - var(--space-y-reverse)));
@@ -4459,6 +4461,18 @@ video {
 .via-pink-900 {
   --gradient-via-color: #702459;
   --gradient-color-stops: var(--gradient-from-color), var(--gradient-via-color), var(--gradient-to-color, rgba(112, 36, 89, 0));
+}
+
+/*Banner open/load animation*/
+.alert-banner {
+  -webkit-animation: slide-in-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+      animation: slide-in-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+/*Banner close animation*/
+.alert-banner input:checked ~ * {
+  -webkit-animation: slide-out-top 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+      animation: slide-out-top 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;		
 }
 
 .to-transparent {
@@ -13733,6 +13747,16 @@ video {
 .inset-x-auto {
   right: auto;
   left: auto;
+}
+
+.toggle-checkbox:checked {
+  @apply: right-0 border-green-400;
+  right: 0;
+  border-color: #68D391;
+}
+.toggle-checkbox:checked + .toggle-label {
+  @apply: bg-green-400;
+  background-color: #68D391;
 }
 
 .top-0 {

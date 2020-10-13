@@ -115,7 +115,9 @@ app.post('/users/upload', upload.single('file'), (req, res) => {
 			fs.unlinkSync(req.file.path);
 			const validationError = validateCsvData(fileRows);
 			if (validationError) {
-				return res.status(400).json({ error: validationError });
+				res.header('Access-Control-Allow-Origin', '*');
+				console.log(validationError);
+				return res.status(400).json({ message: validationError });
 			} else {
 				fileRows.splice(0, 1);
 				fileRows.forEach((row) => {
@@ -131,6 +133,7 @@ app.post('/users/upload', upload.single('file'), (req, res) => {
 						);
 					}
 				);
+				res.header('Access-Control-Allow-Origin', '*');
 				return res.json({ message: 'Upload successful' });
 			}
 		});
