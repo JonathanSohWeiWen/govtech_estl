@@ -4,6 +4,7 @@ const multer = require('multer');
 const bodyParser = require('body-parser');
 const csv = require('fast-csv');
 const fs = require('fs');
+var cors = require('cors');
 var mysql = require('mysql');
 var connection = mysql.createConnection({
 	host: 'localhost',
@@ -19,6 +20,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cors());
 const upload = multer({ dest: 'uploads/' });
 
 const validateCsvData = (rows) => {
@@ -50,6 +52,7 @@ const validateCsvData = (rows) => {
 
 app.get('/users', (req, res) => {
 	console.log(req.query);
+	res.header('Access-Control-Allow-Origin', '*');
 	let minSalary = parseInt(req.query.minSalary);
 	if (!isNaN(minSalary)) {
 		if (minSalary < 0)
@@ -67,8 +70,8 @@ app.get('/users', (req, res) => {
 	} else return res.status(400).json({ error: 'Missing limit' });
 	let offset = parseInt(req.query.offset);
 	if (!isNaN(offset)) {
-		if (offset >= 30)
-			return res.status(400).json({ error: 'Offset must less than 30' });
+		if (offset < 0)
+			return res.status(400).json({ error: 'Offset must be 0 or more' });
 	} else return res.status(400).json({ error: 'Missing offset' });
 	let sortParam = req.query.sort;
 	let order = 'ASC';
@@ -99,12 +102,12 @@ app.get('/users', (req, res) => {
 		offset;
 	connection.query(sqlQuery, (err, result) => {
 		if (err) throw err;
-		res.header('Access-Control-Allow-Origin', '*');
 		return res.send(result);
 	});
 });
 
 app.post('/users/upload', upload.single('file'), (req, res) => {
+	res.header('Access-Control-Allow-Origin', '*');
 	const fileRows = [];
 	csv
 		.parseFile(req.file.path, 'utf-8')
@@ -115,7 +118,6 @@ app.post('/users/upload', upload.single('file'), (req, res) => {
 			fs.unlinkSync(req.file.path);
 			const validationError = validateCsvData(fileRows);
 			if (validationError) {
-				res.header('Access-Control-Allow-Origin', '*');
 				console.log(validationError);
 				return res.status(400).json({ message: validationError });
 			} else {
@@ -133,10 +135,68 @@ app.post('/users/upload', upload.single('file'), (req, res) => {
 						);
 					}
 				);
-				res.header('Access-Control-Allow-Origin', '*');
+
 				return res.json({ message: 'Upload successful' });
 			}
 		});
+});
+
+app.get('/users/:id', (req, res) => {
+	res.header('Access-Control-Allow-Origin', '*');
+	let id = req.params.id;
+	const sqlQuery = 'SELECT * FROM user WHERE id=?';
+	connection.query(sqlQuery, id, (err, result) => {
+		if (err) return res.status(400).json({ error: err });
+		else return res.send(result);
+	});
+});
+
+app.post('/users/:id', upload.none(), (req, res) => {
+	res.header('Access-Control-Allow-Origin', '*');
+	let insertData = [
+		[req.params.id, req.body.login, req.body.name, parseFloat(req.body.salary)],
+	];
+	if (insertData[3] < 0 || insertData[0][3].toFixed(2) !== req.body.salary)
+		return res.status(400).json({ error: 'Invalid data' });
+	connection.query('INSERT INTO user VALUES ?', [insertData], (err, result) => {
+		if (err) return res.status(400).json({ error: err });
+		else return res.send(result);
+	});
+});
+
+app.patch('/users/:id', upload.none(), (req, res) => {
+	res.header('Access-Control-Allow-Origin', '*');
+	let insertData = [
+		[req.params.id, req.body.login, req.body.name, parseFloat(req.body.salary)],
+	];
+	if (insertData[3] < 0 || insertData[0][3].toFixed(2) !== req.body.salary) {
+		return res.status(400).json({ error: 'Invalid data' });
+	}
+	const sqlQuery =
+		"UPDATE user SET login='" +
+		req.body.login +
+		"', name='" +
+		req.body.name +
+		"', salary=" +
+		parseFloat(req.body.salary) +
+		" WHERE id='" +
+		req.params.id +
+		"'";
+	connection.query(sqlQuery, (err, result) => {
+		if (err) {
+			return res.status(400).json({ error: err });
+		} else return res.send(result);
+	});
+});
+
+app.delete('/users/:id', (req, res) => {
+	res.header('Access-Control-Allow-Origin', '*');
+	let id = req.params.id;
+	const sqlQuery = "DELETE FROM user WHERE id='" + id + "'";
+	connection.query(sqlQuery, (err, result) => {
+		if (err) return res.status(400).json({ error: err });
+		else return res.send(result);
+	});
 });
 
 //Start listening on a specific port number
