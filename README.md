@@ -1,6 +1,8 @@
 # Technology Associate Programme (TAP) 2021 Take Home Assessment
 
 ## Assumptions made
+Do not host your app on a public server --> assume that the application only needs to run on localhost, in which case for my example the application will run on http://localhost:3000/
+
 When sorting by name in ascending order, it should display in ascending order by name --> Assumed that ascending order is from A-Z
 When sorting by login descending order, it should display in descending order by login --> Assumed that ascending order is from Z-A
 <br/><br/>
