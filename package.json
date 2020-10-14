@@ -20,6 +20,7 @@
     "react": "^16.13.1",
     "react-axios": "^2.0.3",
     "react-dom": "^16.13.1",
+    "react-localization": "^1.0.15",
     "react-scripts": "3.4.3",
     "sequelize": "^6.3.5"
   },
