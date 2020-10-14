@@ -1,5 +1,11 @@
 # Technology Associate Programme (TAP) 2021 Take Home Assessment
 
+## Assumptions made
+When sorting by name in ascending order, it should display in ascending order by name --> Assumed that ascending order is from A-Z
+When sorting by login descending order, it should display in descending order by login --> Assumed that ascending order is from Z-A
+<br/><br/>
+To test for user story 5, UI localization, user must **change their browser language to reflect the changes.**<br/>
+As an example, I've implmented chinese langauge detection, with UI changes. This can be seen when changing the browser language to **Chinese - 中文**
 ## Installation
 ### Node.js/npm installation
 It is assumed that the npm package has been installed on your machine. If not, please follow the guides listed below <br/>
