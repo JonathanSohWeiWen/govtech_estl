@@ -7,6 +7,7 @@ salary - decimal that is >= 0.00 --> assume that any salary keyed is decimal for
 When sorting by name in ascending order, it should display in ascending order by name --> Assumed that ascending order is from A-Z <br/>
 When sorting by login descending order, it should display in descending order by login --> Assumed that ascending order is from Z-A <br/>
 <br/><br/>
+To test for search, key in the id and hit **enter**<br/>
 To test for user story 5, UI localization, user must **change their browser language to reflect the changes.**<br/>
 As an example, I've implmented chinese langauge detection, with UI changes. This can be seen when changing the browser language to **Chinese - 中文**
 ## Installation
